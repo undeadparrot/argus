@@ -1,6 +1,5 @@
 import logging
 import collections
-import dataclasses
 import json, uuid
 import pyramid
 from pyramid.config import Configurator
@@ -8,25 +7,13 @@ import waitress
 import arrow
 import abc
 
-from sqlalchemy import Column, ForeignKey, String, Integer, JSON, DateTime, create_engine
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.sql.type_api import Variant
-import sqlalchemy.ext.declarative
-
-from typing import List
-
-Base = sqlalchemy.ext.declarative.declarative_base()
-
-class Event(Base):
-    __tablename__ = 'event'
-    id = Column(Integer, primary_key=True)
-    uuid = Column(String().with_variant(UUID, 'postgresql'), nullable=False)
-    body = Column(JSON, nullable=False)
-    created_date = Column(DateTime, nullable=False)
+from sqlalchemy import create_engine
+    
 
 
 
 def ensure_db_exists():
+    return
     db = sqlite3.connect("events.db")
     cursor = db.cursor()
 
@@ -228,9 +215,14 @@ def get_consumers(request):
     ]
     return pyramid.response.Response(json=consumers_dict)
 
+def blah(request):
+    import pdb; pdb.set_trace()
+    print(request)
 
 def make_wsgi():
     config = Configurator()
+    config.add_route('blah', '/')
+    config.add_view(blah, route_name='blah')
     config.add_route("topics", "/topics")
     config.add_route("consumers", "/consumers")
     config.add_route("events_topic", "/events/{topic}")
