@@ -1,5 +1,7 @@
-pyramid
 psycopg2-binary
 sqlalchemy
-waitress
 arrow
+pyramid
+pyramid_mako
+pyramid_debugtoolbar
+waitress
