@@ -26,6 +26,12 @@
     </nav>
     <hr/>
 </header>
+% if error:
+<div class="error">
+    <header>Error</header>
+    <p>${error}</p>
+</div>
+% endif
 <main>
     <%block name="subtitle" />
     ${self.body()}

@@ -28,6 +28,7 @@
 
 <br/>
 
+% if events:
 <section>
     <table>
         <thead>
@@ -51,3 +52,4 @@
         </tbody>
     </table>
 </section>
+% endif
