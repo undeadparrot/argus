@@ -1,6 +1,10 @@
 import logging
 import collections
 import json, uuid
+import multiprocessing
+
+import argus_event_log
+import argus_event_log.model
 import pyramid
 from pyramid.config import Configurator
 import waitress
@@ -15,6 +19,7 @@ def includeme(config):
     engine = sqlalchemy.create_engine('postgresql://argus:argus@localhost/argus')
     make_session = sqlalchemy.orm.sessionmaker(engine)
     config.registry.make_session = make_session
+    config.registry.event_queue = multiprocessing.Queue()
 
     config.include("pyramid_debugtoolbar")
     config.include("pyramid_mako")
@@ -35,7 +40,7 @@ def serve():
     config = Configurator()
     config.include(includeme)
     app = config.make_wsgi_app()
-    waitress.serve(app, port=9000)
+    waitress.serve(app, port=9000, threads=20)
 
 
 if __name__ == "__main__":

@@ -7,3 +7,6 @@ class Handler:
                 self.data.update(request.json)
             else:
                 self.data.update(request.POST)
+        request.add_finished_callback(self.cleanup)
+    def cleanup(self, request):
+        print("Cleanup!")

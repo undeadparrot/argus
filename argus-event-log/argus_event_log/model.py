@@ -14,8 +14,8 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
-from sqlalchemy.sql.type_api import Variant
 import sqlalchemy.ext.declarative
+import sqlalchemy.event
 
 from typing import List
 
@@ -71,3 +71,19 @@ class Consumer(Base):
     def by_token(cls, session, token):
         consumer = session.query(cls).where(cls.token == token).first()
         return consumer
+
+@sqlalchemy.event.listens_for(Event, 'after_insert')
+def notify_event_insert(mapper, connection, target:Event):
+    connection.execute('NOTIFY TOPIC, %s', target.topic.id)
+
+def listen_for_notify(connection):
+    connection.execute('LISTEN TOPIC')
+    connection.execute('commit;')
+    import select
+    while True:
+        select.select([connection.connection], [], [], 5)
+        connection.connection.poll()
+        if connection.connection.notifies:
+            event = connection.connection.notifies.pop()
+            yield event.payload
+

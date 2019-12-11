@@ -33,7 +33,6 @@
 </div>
 % endif
 <main>
-    <%block name="subtitle" />
     ${self.body()}
 </main>
 <footer>
